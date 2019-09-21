@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Иван Фомин](https://up.htmlacademy.ru/javascript/18/user/1037067).
-* Наставник: `Неизвестно`.
+* Наставник: [Александр Тимоновский](https://htmlacademy.ru/profile/id768125).
 
 ---
 
