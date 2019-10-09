@@ -90,7 +90,6 @@ indexObjects.forEach(function (j, i) {
       y: z
     }
   };
-  console.log(generationArray[i]);
   generationArray.push(generationArray[i]);
 });
 generationArray.pop();
