@@ -38,28 +38,28 @@ var offerTitle = function (i) {
   return title;
 };
 
-indexObjects.forEach(function (j, i) {
+var quantity = function getRandom(quant) {
+  return Math.floor(Math.random() * quant);
+};
+var map = function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+var arrayRandom = function arrayRandElement(random) {
+  var rand = Math.floor(Math.random() * random.length);
+  return random[rand];
+};
+var features = OFFER_FEATURES.filter(function () {
+  var x = Math.random();
+  var result = (x > 0.5);
+  return result;
+});
+var photos = OFFER_PHOTOS.filter(function () {
+  var x = Math.random();
+  var result = (x > 0.5);
+  return result;
+});
 
-  var quantity = function getRandom(quant) {
-    return Math.floor(Math.random() * quant);
-  };
-  var map = function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
-  var arrayRandom = function arrayRandElement(random) {
-    var rand = Math.floor(Math.random() * random.length);
-    return random[rand];
-  };
-  var features = OFFER_FEATURES.filter(function () {
-    var x = Math.random();
-    var result = (x > 0.5);
-    return result;
-  });
-  var photos = OFFER_PHOTOS.filter(function () {
-    var x = Math.random();
-    var result = (x > 0.5);
-    return result;
-  });
+indexObjects.forEach(function (j, i) {
 
   var x = map(MIN_X_MAP, maxXMap);
   var y = map(MIN_Y_MAP, MAX_Y_MAP);
@@ -90,9 +90,8 @@ indexObjects.forEach(function (j, i) {
       y: z
     }
   };
-  generationArray.push(generationArray[i]);
 });
-generationArray.pop();
+
 document.querySelector('.map').classList.remove('map--faded');
 
 var renderArray = function (arr) {
