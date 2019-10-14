@@ -147,7 +147,14 @@ var renderCardArray = function (arr) {
     }
   });
   cloneCardElement.querySelector('.popup__description').textContent = arr.offer.description;
-  cloneCardElement.querySelector('.popup__photos').src = arr.offer.photos;
+
+  var pools = cloneCardElement.querySelector('.popup__photos');
+  var blocks = cloneCardElement.querySelector('.popup__photo');
+  pools.removeChild(blocks);
+  arr.offer.photos.map(function (j, i) {
+    pools.insertAdjacentHTML('beforeend', '<img src="' + arr.offer.photos[i] + '" class="popup__photo" width="45" height="40" alt="Фотография жилья">');
+  });
+
   cloneCardElement.querySelector('.popup__avatar').src = arr.author.avatar;
 
   return cloneCardElement;
@@ -163,3 +170,4 @@ generationArray.forEach(function (j, i) {
 });
 mapElement.appendChild(fragment);
 mapCardElement.insertAdjacentHTML('beforeBegin', fragmentCard);
+mapElement.appendChild(fragmentCard);
