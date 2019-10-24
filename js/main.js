@@ -253,6 +253,7 @@ activMap.addEventListener('mousedown', function () {
 activMap.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
     openMap();
+    address();
   }
 });
 
