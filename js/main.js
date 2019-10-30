@@ -306,7 +306,6 @@ var roomMap = {
 var validateRoomAndGuests = function (room, guest) {
   return roomMap[room].includes(guest);
 };
-
 formSubmit.addEventListener('click', function () {
   var targetRooms = document.querySelector('#room_number');
   var targetCapacity = document.querySelector('#capacity');
