@@ -9,6 +9,7 @@ var HAIGTH_LABEL = 87;
 var QUANT_PRICE = 1000;
 var QUANT_ROOMS = 10;
 var ENTER_KEYCODE = 13;
+var ESC_KEYCODE = 27;
 var OFFER_TYPE = ['palace', 'flat', 'house', 'bungalo'];
 var OFFER_TYPE_RUS = ['Дворец', 'Квартира', 'Дом', 'Бунгало'];
 var OFFER_CHECKIN = ['12:00', '13:00', '14:00'];
@@ -20,7 +21,6 @@ var OFFER_PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
 
-var mapCardElement = document.querySelector('.map__filters-container');
 var mapElement = document.querySelector('.map__pins');
 var mapTemplate = document.querySelector('#pin')
     .content
@@ -157,10 +157,6 @@ generationArray.forEach(function (j, i) {
   fragment.appendChild(renderArray(generationArray[i]));
   fragmentCard.appendChild(renderCardArray(generationArray[i]));
 });
-
-mapCardElement.insertAdjacentHTML('beforeBegin', fragmentCard);
-// mapElement.appendChild(fragmentCard);
-
 
 var blockMap = document.querySelectorAll('.map__filter');
 var blockForm = document.querySelectorAll('.ad-form__element');
@@ -313,5 +309,80 @@ formSubmit.addEventListener('click', function () {
     guestCapacity.setCustomValidity('');
   } else {
     guestCapacity.setCustomValidity('Введите правильное количество гостей');
+  }
+});
+
+// 9. Личный проект: доверяй, но проверяй
+
+var mapCard = document.querySelector('.map__pins');
+var mapCardElement = '<div class="map__cards"></div>';
+mapCard.insertAdjacentHTML('afterend', mapCardElement);
+document.querySelector('.map__cards').appendChild(fragmentCard);
+var popupHidden = document.querySelectorAll('.popup');
+
+var insertHidden = function () {
+  popupHidden.forEach(function (j, i) {
+    popupHidden[i].classList.add('hidden');
+  });
+};
+insertHidden();
+
+var mapPinButtonClose = document.querySelectorAll('.popup__close');
+
+var compareValue = function (value) {
+  if (value) {
+    for (var j = 0; j <= popupHidden.length; j++) {
+      var popupValue = popupHidden[j].children[2].textContent;
+      if (value === popupValue) {
+        popupHidden[j].classList.remove('hidden');
+      }
+    }
+  }
+};
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    insertHidden();
+  }
+};
+var showPopup = function (arr) {
+  for (var i = 0; i < arr.length; i++) {
+    arr[i].addEventListener('mousedown', function (evt) {
+      insertHidden();
+      var imgValue = evt.target.alt;
+      compareValue(imgValue);
+      var afterValue = evt.target.childNodes[0].alt;
+      compareValue(afterValue);
+    });
+    arr[i].addEventListener('keydown', function (evt) {
+      if (evt.keyCode === ENTER_KEYCODE) {
+        insertHidden();
+        var imgValue = evt.target.alt;
+        compareValue(imgValue);
+        var afterValue = evt.target.childNodes[0].alt;
+        compareValue(afterValue);
+      }
+    });
+    document.addEventListener('keydown', onPopupEscPress);
+
+    mapPinButtonClose[i].addEventListener('mousedown', function () {
+      insertHidden();
+    });
+
+    mapPinButtonClose[i].addEventListener('keydown', function (evt) {
+      if (evt.keyCode === ENTER_KEYCODE) {
+        insertHidden();
+      }
+    });
+  }
+};
+activMap.addEventListener('mousedown', function () {
+  var mapPinButton = document.querySelectorAll('.map__pin[type="button"]');
+  showPopup(mapPinButton);
+});
+
+activMap.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    var mapPinButton = document.querySelectorAll('.map__pin[type="button"]');
+    showPopup(mapPinButton);
   }
 });
