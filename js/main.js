@@ -60,7 +60,7 @@
 
   indexObjects.forEach(function (j, i) {
 
-    var x = map(window.util.MIN_X_MAP, window.util.maxXMap);
+    var x = map(window.util.MIN_X_MAP, window.util.MAX_X_MAP);
     var y = map(window.util.MIN_Y_MAP, window.util.MAX_Y_MAP);
     var u = x - window.util.WIDTH_LABEL + 'px';
     var z = y - window.util.HAIGTH_LABEL + 'px';

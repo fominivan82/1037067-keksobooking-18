@@ -79,7 +79,7 @@
     }
   };
   var showPopup = function (arr) {
-    arr.length.forEach(function (j, i) {
+    arr.forEach(function (j, i) {
       arr[i].addEventListener('mousedown', function (evt) {
         insertHidden();
         var imgValue = evt.target.alt;

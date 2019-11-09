@@ -8,7 +8,7 @@
     var y = parseInt(getXY.top, RADIX) + window.util.HAIGTH_LABEL;
     var addressWindow = document.querySelector('#address');
 
-    if ((window.util.MIN_Y_MAP < y < window.util.MAX_Y_MAP) && (x <= window.util.maxXMap)) {
+    if ((window.util.MIN_Y_MAP < y < window.util.MAX_Y_MAP) && (x <= window.util.MAX_X_MAP)) {
       addressWindow.setAttribute('readonly', 'readonly');
       addressWindow.value = x + ', ' + y;
     }
@@ -39,31 +39,25 @@
       var styleLeft = (window.util.activMap.offsetLeft - shift.x);
 
       var limitCoords = function (x, y) {
-        switch (true) {
-          case (x < window.util.MIN_X_MAP - window.util.WIDTH_LABEL):
-            window.util.activMap.style.left = (window.util.MIN_X_MAP - window.util.WIDTH_LABEL) + 'px';
-            window.util.activMap.style.top = styleTop + 'px';
-            break;
-
-          case (x > window.util.maxXMap - window.util.WIDTH_LABEL):
-            window.util.activMap.style.left = (window.util.maxXMap - window.util.WIDTH_LABEL) + 'px';
-            window.util.activMap.style.top = styleTop + 'px';
-            break;
-
-          case (y < window.util.MIN_Y_MAP):
-            window.util.activMap.style.top = window.util.MIN_Y_MAP + 'px';
-            window.util.activMap.style.left = styleLeft + 'px';
-            break;
-
-          case (y > window.util.MAX_Y_MAP):
-            window.util.activMap.style.top = window.util.MAX_Y_MAP + 'px';
-            window.util.activMap.style.left = styleLeft + 'px';
-            break;
-
-          default:
-            window.util.activMap.style.top = styleTop + 'px';
-            window.util.activMap.style.left = styleLeft + 'px';
+        var positionX = x;
+        if (x < window.util.MIN_X_MAP - window.util.WIDTH_LABEL) {
+          positionX = window.util.MIN_X_MAP - window.util.WIDTH_LABEL;
         }
+        if (x > window.util.MAX_X_MAP - window.util.WIDTH_LABEL) {
+          positionX = window.util.MAX_X_MAP - window.util.WIDTH_LABEL;
+        }
+
+        var positionY = y;
+        if (y < window.util.MIN_Y_MAP) {
+          positionY = window.util.MIN_Y_MAP;
+        }
+        if (y > window.util.MAX_Y_MAP) {
+          positionY = window.util.MAX_Y_MAP;
+        }
+
+        window.util.activMap.style.top = positionY + 'px';
+        window.util.activMap.style.left = positionX + 'px';
+
       };
 
       limitCoords(styleLeft, styleTop);
