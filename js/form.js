@@ -9,26 +9,32 @@
   var timeOut = document.querySelector('#timeout');
   var formSubmit = document.querySelector('.ad-form__submit');
   var guestCapacity = document.querySelector('#capacity');
+  var MIN_PRICE_BUNGALO = 0;
+  var MIN_PRICE_FLAT = 1000;
+  var MIN_PRICE_HOUSE = 5000;
+  var MIN_PRICE_PALACE = 10000;
+  var MIN_SIMBOLS = 30;
+  var MAX_SIMBOLS = 100;
 
   var validationPriceType = function (target, price) {
     switch (true) {
-      case (target === 'bungalo' && price < 0) || (target === 'bungalo' && price === ''):
-        window.util.insertAttribute('#price', 'placeholder', '0');
+      case (target === 'bungalo' && price < MIN_PRICE_BUNGALO) || (target === 'bungalo' && price === ''):
+        window.util.insertAttribute('#price', 'placeholder', MIN_PRICE_BUNGALO);
         priceForm.setCustomValidity('Минимальная цена Бунгало 0');
         break;
 
-      case target === 'flat' && price < 1000:
-        window.util.insertAttribute('#price', 'placeholder', '1000');
+      case target === 'flat' && price < MIN_PRICE_FLAT:
+        window.util.insertAttribute('#price', 'placeholder', MIN_PRICE_FLAT);
         priceForm.setCustomValidity('Минимальная цена Квартиры 1000');
         break;
 
-      case target === 'house' && price < 5000:
-        window.util.insertAttribute('#price', 'placeholder', '5000');
+      case target === 'house' && price < MIN_PRICE_HOUSE:
+        window.util.insertAttribute('#price', 'placeholder', MIN_PRICE_HOUSE);
         priceForm.setCustomValidity('Минимальная цена Дома 5000');
         break;
 
-      case target === 'palace' && price < 10000:
-        window.util.insertAttribute('#price', 'placeholder', '10000');
+      case target === 'palace' && price < MIN_PRICE_PALACE:
+        window.util.insertAttribute('#price', 'placeholder', MIN_PRICE_PALACE);
         priceForm.setCustomValidity('Минимальная цена Дворца 10000');
         break;
 
@@ -43,13 +49,13 @@
 
   titleForm.addEventListener('input', function (evt) {
     var target = evt.target;
-    if (target.value.length < 30) {
+    if (target.value.length < MIN_SIMBOLS) {
       target.setCustomValidity('Имя должно состоять минимум из 30-ти символов');
     }
-    if (target.value.length > 100) {
+    if (target.value.length > MAX_SIMBOLS) {
       target.setCustomValidity('Имя должно состоять максимум из 100 символов');
     }
-    if (target.value.length > 30 && target.value.length < 100) {
+    if (target.value.length > MIN_SIMBOLS && target.value.length < MAX_SIMBOLS) {
       target.setCustomValidity('');
     }
   });

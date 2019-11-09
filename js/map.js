@@ -65,12 +65,12 @@
 
   var compareValue = function (value) {
     if (value) {
-      for (var j = 0; j <= popupHidden.length; j++) {
-        var popupValue = popupHidden[j].children[2].textContent;
+      popupHidden.forEach(function (j, i) {
+        var popupValue = popupHidden[i].children[2].textContent;
         if (value === popupValue) {
-          popupHidden[j].classList.remove('hidden');
+          popupHidden[i].classList.remove('hidden');
         }
-      }
+      });
     }
   };
   var onPopupEscPress = function (evt) {
@@ -79,7 +79,7 @@
     }
   };
   var showPopup = function (arr) {
-    for (var i = 0; i < arr.length; i++) {
+    arr.length.forEach(function (j, i) {
       arr[i].addEventListener('mousedown', function (evt) {
         insertHidden();
         var imgValue = evt.target.alt;
@@ -107,7 +107,7 @@
           insertHidden();
         }
       });
-    }
+    });
   };
   window.util.activMap.addEventListener('mousedown', function () {
     var mapPinButton = document.querySelectorAll('.map__pin[type="button"]');
