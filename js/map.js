@@ -2,11 +2,10 @@
 
 (function () {
 
-  var ENTER_KEYCODE = 13;
   var ESC_KEYCODE = 27;
   var blockMap = document.querySelectorAll('.map__filter');
   var blockForm = document.querySelectorAll('.ad-form__element');
-  var mapElement = document.querySelector('.map__pins');
+
 
   var insertAllAttribute = function (classname) {
     classname.forEach(function (j, i) {
@@ -25,13 +24,15 @@
   };
 
   var openMap = function () {
-    mapElement.appendChild(window.main.fragment);
+    window.main.successHandler(window.xhr.response);
     document.querySelector('.map').classList.remove('map--faded');
     document.querySelector('.ad-form').classList.remove('ad-form--disabled');
     delAllAttribute(blockMap);
     delAllAttribute(blockForm);
     delAttribute('.map__features');
     delAttribute('.ad-form-header');
+    var mapPinButton = document.querySelectorAll('.map__pin[type="button"]');
+    showPopup(mapPinButton);
   };
 
   insertAllAttribute(blockMap);
@@ -40,35 +41,47 @@
   window.util.insertAttribute('.ad-form-header', 'disabled', 'disabled');
 
   window.util.activMap.addEventListener('mousedown', function () {
-    openMap();
+
+    if (document.querySelector('.map--faded')) {
+      openMap();
+      window.address();
+
+    }
+
   });
   window.util.activMap.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
-      openMap();
+    if (evt.keyCode === window.util.ENTER_KEYCODE) {
+      if (document.querySelector('.map--faded')) {
+        openMap();
+        window.address();
+      }
     }
   });
 
-  var mapCard = document.querySelector('.map__pins');
+  var mapPins = document.querySelector('.map__pins');
   var mapCardElement = '<div class="map__cards"></div>';
-  mapCard.insertAdjacentHTML('afterend', mapCardElement);
-  document.querySelector('.map__cards').appendChild(window.main.fragmentCard);
-  var popupHidden = document.querySelectorAll('.popup');
+  mapPins.insertAdjacentHTML('afterend', mapCardElement);
+
+
+  window.xhr.addEventListener('load', function () {
+    window.map = {
+      popupHidden: document.querySelectorAll('.popup'),
+      mapPinButtonClose: document.querySelectorAll('.popup__close')
+    };
+  });
 
   var insertHidden = function () {
-    popupHidden.forEach(function (j, i) {
-      popupHidden[i].classList.add('hidden');
+    window.map.popupHidden.forEach(function (j, i) {
+      window.map.popupHidden[i].classList.add('hidden');
     });
   };
-  insertHidden();
-
-  var mapPinButtonClose = document.querySelectorAll('.popup__close');
 
   var compareValue = function (value) {
     if (value) {
-      popupHidden.forEach(function (j, i) {
-        var popupValue = popupHidden[i].children[2].textContent;
+      window.map.popupHidden.forEach(function (j, i) {
+        var popupValue = window.map.popupHidden[i].children[2].textContent;
         if (value === popupValue) {
-          popupHidden[i].classList.remove('hidden');
+          window.map.popupHidden[i].classList.remove('hidden');
         }
       });
     }
@@ -88,7 +101,7 @@
         compareValue(afterValue);
       });
       arr[i].addEventListener('keydown', function (evt) {
-        if (evt.keyCode === ENTER_KEYCODE) {
+        if (evt.keyCode === window.util.ENTER_KEYCODE) {
           insertHidden();
           var imgValue = evt.target.alt;
           compareValue(imgValue);
@@ -98,26 +111,15 @@
       });
       document.addEventListener('keydown', onPopupEscPress);
 
-      mapPinButtonClose[i].addEventListener('mousedown', function () {
+      window.map.mapPinButtonClose[i].addEventListener('mousedown', function () {
         insertHidden();
       });
 
-      mapPinButtonClose[i].addEventListener('keydown', function (evt) {
-        if (evt.keyCode === ENTER_KEYCODE) {
+      window.map.mapPinButtonClose[i].addEventListener('keydown', function (evt) {
+        if (evt.keyCode === window.util.ENTER_KEYCODE) {
           insertHidden();
         }
       });
     });
   };
-  window.util.activMap.addEventListener('mousedown', function () {
-    var mapPinButton = document.querySelectorAll('.map__pin[type="button"]');
-    showPopup(mapPinButton);
-  });
-
-  window.util.activMap.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
-      var mapPinButton = document.querySelectorAll('.map__pin[type="button"]');
-      showPopup(mapPinButton);
-    }
-  });
 })();

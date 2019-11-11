@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var address = function () {
+  window.address = function () {
     var RADIX = 10;
     var getXY = getComputedStyle(window.util.activMap);
     var x = parseInt(getXY.left, RADIX) + window.util.WIDTH_LABEL;
@@ -61,7 +61,7 @@
       };
 
       limitCoords(styleLeft, styleTop);
-      address();
+      window.address();
     };
 
     var onMouseUp = function (upEvt) {
