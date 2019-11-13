@@ -15,13 +15,58 @@
       .content
       .querySelector('.error');
 
+  var removeOpenedCard = function () {
+    var mapCard = document.querySelector('.map__card');
+    if (mapCard) {
+      mapCard.remove();
+    }
+  };
+
+  var openCard = function (adData) {
+    var fragmentCard = document.createDocumentFragment();
+    fragmentCard.appendChild(window.main.renderCardArray(adData));
+    document.querySelector('.map__cards').appendChild(fragmentCard);
+
+    document.addEventListener('keydown', onPopupEscPress);
+
+    var mapPinButtonClose = document.querySelector('.popup__close');
+    mapPinButtonClose.addEventListener('mousedown', function () {
+      removeOpenedCard();
+    });
+
+    mapPinButtonClose.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === window.util.ENTER_KEYCODE) {
+        removeOpenedCard();
+      }
+    });
+  };
+
+  var onPopupEscPress = function (evt) {
+    if (evt.keyCode === window.util.ESC_KYECODE) {
+      document.removeEventListener('keydown', onPopupEscPress);
+      removeOpenedCard();
+    }
+  };
+
   window.main = {
-    renderArray: function (arr) {
+    renderArray: function (adData) {
       var cloneElement = mapTemplate.cloneNode(true);
-      cloneElement.style.left = arr.location.x - window.util.WIDTH_LABEL + 'px';
-      cloneElement.style.top = arr.location.y - window.util.HAIGTH_LABEL + 'px';
-      cloneElement.children[0].src = arr.author.avatar;
-      cloneElement.children[0].alt = arr.offer.title;
+      cloneElement.style.left = adData.location.x - window.util.WIDTH_LABEL + 'px';
+      cloneElement.style.top = adData.location.y - window.util.HAIGTH_LABEL + 'px';
+      cloneElement.children[0].src = adData.author.avatar;
+      cloneElement.children[0].alt = adData.offer.title;
+
+      cloneElement.addEventListener('mousedown', function () {
+        removeOpenedCard();
+        openCard(adData);
+      });
+
+      cloneElement.addEventListener('keydown', function (evt) {
+        if (evt.keyCode === window.util.ENTER_KEYCODE) {
+          removeOpenedCard();
+          openCard(adData);
+        }
+      });
 
       return cloneElement;
     },
@@ -55,8 +100,8 @@
       var pools = cloneCardElement.querySelector('.popup__photos');
       var blocks = cloneCardElement.querySelector('.popup__photo');
       pools.removeChild(blocks);
-      arr.offer.photos.map(function (j, i) {
-        pools.insertAdjacentHTML('beforeend', '<img src="' + arr.offer.photos[i] + '" class="popup__photo" width="45" height="40" alt="Фотография жилья">');
+      arr.offer.photos.map(function (photoSrc) {
+        pools.insertAdjacentHTML('beforeend', '<img src="' + photoSrc + '" class="popup__photo" width="45" height="40" alt="Фотография жилья">');
       });
 
       cloneCardElement.querySelector('.popup__avatar').src = arr.author.avatar;

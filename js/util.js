@@ -8,6 +8,7 @@ window.util = (function () {
     WIDTH_LABEL: 32,
     HAIGTH_LABEL: 87,
     ENTER_KEYCODE: 13,
+    ESC_KYECODE: 27,
 
     MAX_X_MAP: document.querySelector('.map').offsetWidth,
     activMap: document.querySelector('.map__pin--main'),
