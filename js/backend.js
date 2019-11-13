@@ -6,7 +6,7 @@
   var SEC = 10000; // 10s
 
 
-  window.loadAndSave = function (onSuccess, onError, URL, metod, data) {
+  var loadAndSave = function (onSuccess, onError, URL, metod, data) {
     window.xhr = new XMLHttpRequest();
     window.xhr.responseType = 'json';
     window.xhr.addEventListener('load', function () {
@@ -27,5 +27,9 @@
     window.xhr.timeout = SEC;
     window.xhr.open(metod, URL);
     window.xhr.send(data);
+  };
+
+  window.backend = {
+    loadAndSave: loadAndSave,
   };
 })();

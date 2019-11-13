@@ -24,18 +24,80 @@
     errorHandler: function (errorMessage) {
       document.body.insertAdjacentElement('afterbegin', window.main.renderError(errorMessage));
 
-      var errButton = document.querySelector('.error__button');
-      errButton.addEventListener('mousedown', function () {
-        window.loadAndSave(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
-        document.querySelector('.error').remove();
+      getError(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
+      document.addEventListener('keydown', onErrLoadEscClose);
+    },
+
+    successSaveHandler: function () {
+      document.body.insertAdjacentElement('afterbegin', window.main.renderSuccess());
+
+      document.body.addEventListener('click', function () {
+        successSave();
       });
 
-      errButton.addEventListener('keydown', function (evt) {
-        if (evt.keyCode === window.util.ENTER_KEYCODE) {
-          window.loadAndSave(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
-          document.querySelector('.error').remove();
-        }
-      });
+      document.addEventListener('keydown', onPopupEscClose);
+    },
+
+    errorSaveHandler: function (errorMessage) {
+      window.util.adjElement.insertAdjacentElement('afterbegin', window.main.renderError(errorMessage));
+      getError(window.map.successSaveHandler, window.map.errorSaveHandler, window.util.saveURL, window.util.saveMetod, window.formData);
+      document.addEventListener('keydown', onErrPopupEscClose);
+    },
+  };
+
+  var getError = function (onSuccess, onError, URL, metod, data) {
+    document.body.onmousedown = function () {
+      document.querySelector('.error').remove();
+      window.backend.loadAndSave(onSuccess, onError, URL, metod, data);
+    };
+
+    var errButton = document.querySelector('.error__button');
+    errButton.onmousedown = function () {
+      document.querySelector('.error').remove();
+      window.backend.loadAndSave(onSuccess, onError, URL, metod, data);
+    };
+  };
+
+  var successSave = function () {
+    document.querySelector('.success').remove();
+
+    window.util.setupForm.reset();
+    window.util.activMap.style.left = 570 + 'px';
+    window.util.activMap.style.top = 376 + 'px';
+    window.pin.address();
+    window.util.insertAttribute('#price', 'placeholder', '5000');
+    var mapPinButton = document.querySelectorAll('.map__pin[type="button"]');
+    mapPinButton.forEach(function (pin) {
+      pin.remove();
+    });
+    document.querySelector('.map').classList.add('map--faded');
+    document.querySelector('.ad-form').classList.add('ad-form--disabled');
+    insertAllAttribute(blockMap);
+    insertAllAttribute(blockForm);
+    window.util.insertAttribute('.map__features', 'disabled', 'disabled');
+    window.util.insertAttribute('.ad-form-header', 'disabled', 'disabled');
+  };
+
+  var onPopupEscClose = function (evt) {
+    if (evt.keyCode === window.util.ESC_KYECODE) {
+      document.removeEventListener('keydown', onPopupEscClose);
+      successSave();
+    }
+  };
+
+  var onErrLoadEscClose = function (evt) {
+    if (evt.keyCode === window.util.ESC_KYECODE) {
+      document.removeEventListener('keydown', onErrLoadEscClose);
+      document.querySelector('.error').remove();
+      window.backend.loadAndSave(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
+    }
+  };
+
+  var onErrPopupEscClose = function (evt) {
+    if (evt.keyCode === window.util.ESC_KYECODE) {
+      document.removeEventListener('keydown', onErrPopupEscClose);
+      document.querySelector('.error').remove();
+      window.backend.loadAndSave(window.map.successSaveHandler, window.map.errorSaveHandler, window.util.saveURL, window.util.saveMetod, window.formData);
     }
   };
 
@@ -71,12 +133,12 @@
 
   window.util.activMap.addEventListener('mousedown', function () {
     if (document.querySelector('.map--faded')) {
-      window.loadAndSave(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
+      window.backend.loadAndSave(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
     }
   });
   window.util.activMap.addEventListener('keydown', function (evt) {
     if (evt.keyCode === window.util.ENTER_KEYCODE && document.querySelector('.map--faded')) {
-      window.loadAndSave(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
+      window.backend.loadAndSave(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
     }
   });
 

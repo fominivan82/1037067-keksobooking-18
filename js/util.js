@@ -14,6 +14,10 @@ window.util = (function () {
     activMap: document.querySelector('.map__pin--main'),
     loadURL: 'https://js.dump.academy/keksobooking/data',
     loadMetod: 'GET',
+    saveURL: 'https://js.dump.academy/keksobooking',
+    saveMetod: 'POST',
+    setupForm: document.querySelector('.ad-form'),
+    adjElement: document.querySelector('main'),
 
     insertAttribute: function (classname, attribute, value) {
       document.querySelector(classname).setAttribute(attribute, value);

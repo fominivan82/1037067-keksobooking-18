@@ -99,4 +99,10 @@
       guestCapacity.setCustomValidity('Введите правильное количество гостей');
     }
   });
+
+  window.util.setupForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.formData = new FormData(window.util.setupForm);
+    window.backend.loadAndSave(window.map.successSaveHandler, window.map.errorSaveHandler, window.util.saveURL, window.util.saveMetod, window.formData);
+  });
 })();
