@@ -14,6 +14,9 @@
   var errDataTemplate = document.querySelector('#error')
       .content
       .querySelector('.error');
+  var SuccDataTemplate = document.querySelector('#success')
+      .content
+      .querySelector('.success');
 
   var removeOpenedCard = function () {
     var mapCard = document.querySelector('.map__card');
@@ -114,6 +117,11 @@
       var cloneErrElement = errDataTemplate.cloneNode(true);
       cloneErrElement.querySelector('.error__message').textContent = errorMessage;
       return cloneErrElement;
+    },
+
+    renderSuccess: function () {
+      var cloneSuccElement = SuccDataTemplate.cloneNode(true);
+      return cloneSuccElement;
     }
   };
 })();
