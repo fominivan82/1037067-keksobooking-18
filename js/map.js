@@ -4,19 +4,15 @@
 
   var TOTAL_SHOW_PIN = 5;
   var blockMap = document.querySelectorAll('.map__filter');
+  var filterMap = document.querySelector('.map__filters');
   var blockForm = document.querySelectorAll('.ad-form__element');
   var mapElement = document.querySelector('.map__pins');
 
 
   window.map = {
     successHandler: function (arr) {
-      var fragment = document.createDocumentFragment();
-      var ads = arr.slice(0, TOTAL_SHOW_PIN);
-      ads.forEach(function (ad) {
-        fragment.appendChild(window.main.renderArray(ad));
-      });
-      mapElement.appendChild(fragment);
-
+      addFragment(arr);
+      getfilterMap();
       openMap();
       window.pin.address();
     },
@@ -45,6 +41,49 @@
     },
   };
 
+  var getfilterMap = function () {
+    var offers = Array.from(window.xhr.response).map(function (array) {
+      return array;
+    });
+
+    var houseMap = {
+      'any': ['palace', 'flat', 'house', 'bungalo'],
+      'palace': ['palace'],
+      'flat': ['flat'],
+      'house': ['house'],
+      'bungalo': ['bungalo']
+    };
+
+    var filterMapPins = function (type, sign) {
+      return houseMap[type].includes(sign);
+    };
+    filterMap.onclick = function () {
+      var targetHouse = document.querySelector('#housing-type');
+      var offersHouse = offers.filter(function (arr) {
+        return filterMapPins(targetHouse.value, arr.offer.type);
+      });
+
+      delPins();
+      addFragment(offersHouse);
+    };
+  };
+
+  var addFragment = function (arr) {
+    var fragment = document.createDocumentFragment();
+    var ads = arr.slice(0, TOTAL_SHOW_PIN);
+    ads.forEach(function (ad) {
+      fragment.appendChild(window.main.renderArray(ad));
+    });
+    mapElement.appendChild(fragment);
+  };
+
+  var delPins = function () {
+    var mapPinButton = document.querySelectorAll('.map__pin[type="button"]');
+    mapPinButton.forEach(function (pin) {
+      pin.remove();
+    });
+  };
+
   var getError = function (onSuccess, onError, URL, metod, data) {
     document.body.onmousedown = function () {
       document.querySelector('.error').remove();
@@ -66,10 +105,8 @@
     window.util.activMap.style.top = 376 + 'px';
     window.pin.address();
     window.util.insertAttribute('#price', 'placeholder', '5000');
-    var mapPinButton = document.querySelectorAll('.map__pin[type="button"]');
-    mapPinButton.forEach(function (pin) {
-      pin.remove();
-    });
+    delPins();
+
     document.querySelector('.map').classList.add('map--faded');
     document.querySelector('.ad-form').classList.add('ad-form--disabled');
     insertAllAttribute(blockMap);
