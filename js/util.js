@@ -9,6 +9,10 @@ window.util = (function () {
     HAIGTH_LABEL: 87,
     ENTER_KEYCODE: 13,
     ESC_KYECODE: 27,
+    MIN_PRICE_BUNGALO: 0,
+    MIN_PRICE_FLAT: 1000,
+    MIN_PRICE_HOUSE: 5000,
+    MIN_PRICE_PALACE: 10000,
 
     MAX_X_MAP: document.querySelector('.map').offsetWidth,
     activMap: document.querySelector('.map__pin--main'),
