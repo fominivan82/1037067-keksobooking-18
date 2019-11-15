@@ -4,68 +4,34 @@
 
   var TOTAL_SHOW_PIN = 5;
   var blockMap = document.querySelectorAll('.map__filter');
-  var filterMap = document.querySelector('.map__filters');
   var blockForm = document.querySelectorAll('.ad-form__element');
   var mapElement = document.querySelector('.map__pins');
 
-
-  window.map = {
-    successHandler: function (arr) {
-      addFragment(arr);
-      getfilterMap();
-      openMap();
-      window.pin.address();
-    },
-
-    errorHandler: function (errorMessage) {
-      document.body.insertAdjacentElement('afterbegin', window.main.renderError(errorMessage));
-
-      getError(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
-      document.addEventListener('keydown', onErrLoadEscClose);
-    },
-
-    successSaveHandler: function () {
-      document.body.insertAdjacentElement('afterbegin', window.main.renderSuccess());
-
-      document.body.addEventListener('click', function () {
-        successSave();
-      });
-
-      document.addEventListener('keydown', onPopupEscClose);
-    },
-
-    errorSaveHandler: function (errorMessage) {
-      window.util.adjElement.insertAdjacentElement('afterbegin', window.main.renderError(errorMessage));
-      getError(window.map.successSaveHandler, window.map.errorSaveHandler, window.util.saveURL, window.util.saveMetod, window.formData);
-      document.addEventListener('keydown', onErrPopupEscClose);
-    },
+  var successHandler = function (arr) {
+    addFragment(arr);
+    openMap();
+    window.pin.address();
+    window.filtr.getfilterMap();
   };
 
-  var getfilterMap = function () {
-    var offers = Array.from(window.xhr.response).map(function (array) {
-      return array;
+  var errorHandler = function (errorMessage) {
+    document.body.insertAdjacentElement('afterbegin', window.main.renderError(errorMessage));
+    getError(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
+    document.addEventListener('keydown', onErrLoadEscClose);
+  };
+
+  var successSaveHandler = function () {
+    document.body.insertAdjacentElement('afterbegin', window.main.renderSuccess());
+    document.body.addEventListener('click', function () {
+      successSave();
     });
+    document.addEventListener('keydown', onPopupEscClose);
+  };
 
-    var houseMap = {
-      'any': ['palace', 'flat', 'house', 'bungalo'],
-      'palace': ['palace'],
-      'flat': ['flat'],
-      'house': ['house'],
-      'bungalo': ['bungalo']
-    };
-
-    var filterMapPins = function (type, sign) {
-      return houseMap[type].includes(sign);
-    };
-    filterMap.onclick = function () {
-      var targetHouse = document.querySelector('#housing-type');
-      var offersHouse = offers.filter(function (arr) {
-        return filterMapPins(targetHouse.value, arr.offer.type);
-      });
-
-      delPins();
-      addFragment(offersHouse);
-    };
+  var errorSaveHandler = function (errorMessage) {
+    window.util.adjElement.insertAdjacentElement('afterbegin', window.main.renderError(errorMessage));
+    getError(window.map.successSaveHandler, window.map.errorSaveHandler, window.util.saveURL, window.util.saveMetod, window.formData);
+    document.addEventListener('keydown', onErrPopupEscClose);
   };
 
   var addFragment = function (arr) {
@@ -182,5 +148,14 @@
   var mapPins = document.querySelector('.map__pins');
   var mapCardElement = '<div class="map__cards"></div>';
   mapPins.insertAdjacentHTML('afterend', mapCardElement);
+
+  window.map = {
+    addFragment: addFragment,
+    delPins: delPins,
+    successHandler: successHandler,
+    errorHandler: errorHandler,
+    successSaveHandler: successSaveHandler,
+    errorSaveHandler: errorSaveHandler
+  };
 
 })();

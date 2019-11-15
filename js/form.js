@@ -105,4 +105,8 @@
     window.formData = new FormData(window.util.setupForm);
     window.backend.loadAndSave(window.map.successSaveHandler, window.map.errorSaveHandler, window.util.saveURL, window.util.saveMetod, window.formData);
   });
+
+  window.form = {
+    roomMap: roomMap,
+  };
 })();

@@ -52,6 +52,9 @@
   };
 
   window.main = {
+
+    removeOpenedCard: removeOpenedCard,
+
     renderArray: function (adData) {
       var cloneElement = mapTemplate.cloneNode(true);
       cloneElement.style.left = adData.location.x - window.util.WIDTH_LABEL + 'px';
