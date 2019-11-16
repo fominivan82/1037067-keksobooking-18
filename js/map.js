@@ -7,42 +7,47 @@
   var blockForm = document.querySelectorAll('.ad-form__element');
   var mapElement = document.querySelector('.map__pins');
 
+  var successHandler = function (arr) {
+    addFragment(arr);
+    openMap();
+    window.pin.address();
+    window.filtr.getfilterMap();
+  };
 
-  window.map = {
-    successHandler: function (arr) {
-      var fragment = document.createDocumentFragment();
-      var ads = arr.slice(0, TOTAL_SHOW_PIN);
-      ads.forEach(function (ad) {
-        fragment.appendChild(window.main.renderArray(ad));
-      });
-      mapElement.appendChild(fragment);
+  var errorHandler = function (errorMessage) {
+    document.body.insertAdjacentElement('afterbegin', window.main.renderError(errorMessage));
+    getError(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
+    document.addEventListener('keydown', onErrLoadEscClose);
+  };
 
-      openMap();
-      window.pin.address();
-    },
+  var successSaveHandler = function () {
+    document.body.insertAdjacentElement('afterbegin', window.main.renderSuccess());
+    document.body.addEventListener('click', function () {
+      successSave();
+    });
+    document.addEventListener('keydown', onPopupEscClose);
+  };
 
-    errorHandler: function (errorMessage) {
-      document.body.insertAdjacentElement('afterbegin', window.main.renderError(errorMessage));
+  var errorSaveHandler = function (errorMessage) {
+    window.util.adjElement.insertAdjacentElement('afterbegin', window.main.renderError(errorMessage));
+    getError(window.map.successSaveHandler, window.map.errorSaveHandler, window.util.saveURL, window.util.saveMetod, window.formData);
+    document.addEventListener('keydown', onErrPopupEscClose);
+  };
 
-      getError(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
-      document.addEventListener('keydown', onErrLoadEscClose);
-    },
+  var addFragment = function (arr) {
+    var fragment = document.createDocumentFragment();
+    var ads = arr.slice(0, TOTAL_SHOW_PIN);
+    ads.forEach(function (ad) {
+      fragment.appendChild(window.main.renderArray(ad));
+    });
+    mapElement.appendChild(fragment);
+  };
 
-    successSaveHandler: function () {
-      document.body.insertAdjacentElement('afterbegin', window.main.renderSuccess());
-
-      document.body.addEventListener('click', function () {
-        successSave();
-      });
-
-      document.addEventListener('keydown', onPopupEscClose);
-    },
-
-    errorSaveHandler: function (errorMessage) {
-      window.util.adjElement.insertAdjacentElement('afterbegin', window.main.renderError(errorMessage));
-      getError(window.map.successSaveHandler, window.map.errorSaveHandler, window.util.saveURL, window.util.saveMetod, window.formData);
-      document.addEventListener('keydown', onErrPopupEscClose);
-    },
+  var delPins = function () {
+    var mapPinButton = document.querySelectorAll('.map__pin[type="button"]');
+    mapPinButton.forEach(function (pin) {
+      pin.remove();
+    });
   };
 
   var getError = function (onSuccess, onError, URL, metod, data) {
@@ -66,10 +71,8 @@
     window.util.activMap.style.top = 376 + 'px';
     window.pin.address();
     window.util.insertAttribute('#price', 'placeholder', '5000');
-    var mapPinButton = document.querySelectorAll('.map__pin[type="button"]');
-    mapPinButton.forEach(function (pin) {
-      pin.remove();
-    });
+    delPins();
+
     document.querySelector('.map').classList.add('map--faded');
     document.querySelector('.ad-form').classList.add('ad-form--disabled');
     insertAllAttribute(blockMap);
@@ -145,5 +148,14 @@
   var mapPins = document.querySelector('.map__pins');
   var mapCardElement = '<div class="map__cards"></div>';
   mapPins.insertAdjacentHTML('afterend', mapCardElement);
+
+  window.map = {
+    addFragment: addFragment,
+    delPins: delPins,
+    successHandler: successHandler,
+    errorHandler: errorHandler,
+    successSaveHandler: successSaveHandler,
+    errorSaveHandler: errorSaveHandler
+  };
 
 })();

@@ -9,32 +9,28 @@
   var timeOut = document.querySelector('#timeout');
   var formSubmit = document.querySelector('.ad-form__submit');
   var guestCapacity = document.querySelector('#capacity');
-  var MIN_PRICE_BUNGALO = 0;
-  var MIN_PRICE_FLAT = 1000;
-  var MIN_PRICE_HOUSE = 5000;
-  var MIN_PRICE_PALACE = 10000;
   var MIN_SIMBOLS = 30;
   var MAX_SIMBOLS = 100;
 
   var validationPriceType = function (target, price) {
     switch (true) {
-      case (target === 'bungalo' && price < MIN_PRICE_BUNGALO) || (target === 'bungalo' && price === ''):
-        window.util.insertAttribute('#price', 'placeholder', MIN_PRICE_BUNGALO);
+      case (target === 'bungalo' && price < window.util.MIN_PRICE_BUNGALO) || (target === 'bungalo' && price === ''):
+        window.util.insertAttribute('#price', 'placeholder', window.util.MIN_PRICE_BUNGALO);
         priceForm.setCustomValidity('Минимальная цена Бунгало 0');
         break;
 
-      case target === 'flat' && price < MIN_PRICE_FLAT:
-        window.util.insertAttribute('#price', 'placeholder', MIN_PRICE_FLAT);
+      case target === 'flat' && price < window.util.MIN_PRICE_FLAT:
+        window.util.insertAttribute('#price', 'placeholder', window.util.MIN_PRICE_FLAT);
         priceForm.setCustomValidity('Минимальная цена Квартиры 1000');
         break;
 
-      case target === 'house' && price < MIN_PRICE_HOUSE:
-        window.util.insertAttribute('#price', 'placeholder', MIN_PRICE_HOUSE);
+      case target === 'house' && price < window.util.MIN_PRICE_HOUSE:
+        window.util.insertAttribute('#price', 'placeholder', window.util.MIN_PRICE_HOUSE);
         priceForm.setCustomValidity('Минимальная цена Дома 5000');
         break;
 
-      case target === 'palace' && price < MIN_PRICE_PALACE:
-        window.util.insertAttribute('#price', 'placeholder', MIN_PRICE_PALACE);
+      case target === 'palace' && price < window.util.MIN_PRICE_PALACE:
+        window.util.insertAttribute('#price', 'placeholder', window.util.MIN_PRICE_PALACE);
         priceForm.setCustomValidity('Минимальная цена Дворца 10000');
         break;
 
@@ -105,4 +101,8 @@
     window.formData = new FormData(window.util.setupForm);
     window.backend.loadAndSave(window.map.successSaveHandler, window.map.errorSaveHandler, window.util.saveURL, window.util.saveMetod, window.formData);
   });
+
+  window.form = {
+    roomMap: roomMap,
+  };
 })();
