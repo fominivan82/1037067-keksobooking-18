@@ -146,7 +146,7 @@
 
       filterOffers = filterOffers.filter(function (featureTypei) {
         var filFeatur = featureTypei.offer.features.filter(function (n) {
-          return checkFeaturesValue.indexOf(n) >= 0;
+          return checkFeaturesValue.indexOf(n) >= ZERO;
         });
         return filFeatur.length === checkFeatures.length;
       });

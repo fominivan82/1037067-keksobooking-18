@@ -3,6 +3,8 @@
 (function () {
 
   var TOTAL_SHOW_PIN = 5;
+  var INITIAL_COORDINATES_TOP = 376;
+  var INITIAL_COORDINATES_LEFT = 570;
   var blockMap = document.querySelectorAll('.map__filter');
   var blockForm = document.querySelectorAll('.ad-form__element');
   var mapElement = document.querySelector('.map__pins');
@@ -67,8 +69,8 @@
     document.querySelector('.success').remove();
 
     window.util.setupForm.reset();
-    window.util.activMap.style.left = 570 + 'px';
-    window.util.activMap.style.top = 376 + 'px';
+    window.util.activMap.style.left = INITIAL_COORDINATES_LEFT + 'px';
+    window.util.activMap.style.top = INITIAL_COORDINATES_TOP + 'px';
     window.pin.address();
     window.util.insertAttribute('#price', 'placeholder', '5000');
     delPins();
