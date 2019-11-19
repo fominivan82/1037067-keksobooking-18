@@ -3,6 +3,9 @@
 (function () {
 
   var SUCCESS = 200;
+  var BAD_REQUEST = 400;
+  var NOT_FOUND = 404;
+  var ENTERNAL_ERROR = 500;
   var SEC = 10000; // 10s
 
 
@@ -13,6 +16,15 @@
       switch (true) {
         case (window.xhr.status === SUCCESS):
           onSuccess(window.xhr.response);
+          break;
+        case (window.xhr.status === BAD_REQUEST):
+          onError('Произошла ошибка сервера: неверный запрос');
+          break;
+        case (window.xhr.status === NOT_FOUND):
+          onError('Произошла ошибка сервера: запрашиваемый ресурс не найден');
+          break;
+        case (window.xhr.status === ENTERNAL_ERROR):
+          onError('Произошла внутренняя ошибка сервера');
           break;
         default:
           onError('Статус ответа: ' + window.xhr.status + ' ' + window.xhr.statusText);
@@ -31,5 +43,6 @@
 
   window.backend = {
     loadAndSave: loadAndSave,
+    SUCCESS: SUCCESS
   };
 })();

@@ -8,12 +8,16 @@
   var blockMap = document.querySelectorAll('.map__filter');
   var blockForm = document.querySelectorAll('.ad-form__element');
   var mapElement = document.querySelector('.map__pins');
+  var resetButton = document.querySelector('.ad-form__reset');
 
   var successHandler = function (arr) {
     addFragment(arr);
-    openMap();
-    window.pin.address();
+    delAllAttribute(blockMap);
+    delAttribute('.map__features');
+    window.pin.showAddress();
     window.filtr.getfilterMap();
+    window.util.activMap.removeEventListener('mousedown', requestRepeated);
+    window.util.activMap.removeEventListener('keydown', requestRepeatedEnter);
   };
 
   var errorHandler = function (errorMessage) {
@@ -24,9 +28,9 @@
 
   var successSaveHandler = function () {
     document.body.insertAdjacentElement('afterbegin', window.main.renderSuccess());
-    document.body.addEventListener('click', function () {
-      successSave();
-    });
+    window.main.removeOpenedCard();
+    resetFiltrs();
+    document.body.addEventListener('click', successSave);
     document.addEventListener('keydown', onPopupEscClose);
   };
 
@@ -45,6 +49,10 @@
     mapElement.appendChild(fragment);
   };
 
+  var resetFiltrs = function () {
+    window.filtr.filterMap.reset();
+  };
+
   var delPins = function () {
     var mapPinButton = document.querySelectorAll('.map__pin[type="button"]');
     mapPinButton.forEach(function (pin) {
@@ -52,35 +60,48 @@
     });
   };
 
-  var getError = function (onSuccess, onError, URL, metod, data) {
+  var getError = function () {
     document.body.onmousedown = function () {
-      document.querySelector('.error').remove();
-      window.backend.loadAndSave(onSuccess, onError, URL, metod, data);
+      var errorClass = document.querySelector('.error');
+      if (errorClass) {
+        errorClass.remove();
+      }
+      openMap();
+      window.util.activMap.addEventListener('mousedown', requestRepeated);
+      window.util.activMap.addEventListener('keydown', requestRepeatedEnter);
     };
 
     var errButton = document.querySelector('.error__button');
-    errButton.onmousedown = function () {
+    errButton.onmousedown = function (evt) {
+      evt.stopImmediatePropagation();
       document.querySelector('.error').remove();
-      window.backend.loadAndSave(onSuccess, onError, URL, metod, data);
     };
   };
 
-  var successSave = function () {
-    document.querySelector('.success').remove();
-
+  var resetForm = function () {
     window.util.setupForm.reset();
     window.util.activMap.style.left = INITIAL_COORDINATES_LEFT + 'px';
     window.util.activMap.style.top = INITIAL_COORDINATES_TOP + 'px';
-    window.pin.address();
     window.util.insertAttribute('#price', 'placeholder', '5000');
-    delPins();
+  };
 
+  var resetPage = function () {
     document.querySelector('.map').classList.add('map--faded');
     document.querySelector('.ad-form').classList.add('ad-form--disabled');
     insertAllAttribute(blockMap);
     insertAllAttribute(blockForm);
     window.util.insertAttribute('.map__features', 'disabled', 'disabled');
     window.util.insertAttribute('.ad-form-header', 'disabled', 'disabled');
+  };
+
+  var successSave = function () {
+    document.body.removeEventListener('click', successSave);
+    document.querySelector('.success').remove();
+
+    resetForm();
+    window.pin.showAddress();
+    delPins();
+    resetPage();
   };
 
   var onPopupEscClose = function (evt) {
@@ -94,7 +115,9 @@
     if (evt.keyCode === window.util.ESC_KYECODE) {
       document.removeEventListener('keydown', onErrLoadEscClose);
       document.querySelector('.error').remove();
-      window.backend.loadAndSave(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
+      openMap();
+      window.util.activMap.addEventListener('mousedown', requestRepeated);
+      window.util.activMap.addEventListener('keydown', requestRepeatedEnter);
     }
   };
 
@@ -102,7 +125,30 @@
     if (evt.keyCode === window.util.ESC_KYECODE) {
       document.removeEventListener('keydown', onErrPopupEscClose);
       document.querySelector('.error').remove();
-      window.backend.loadAndSave(window.map.successSaveHandler, window.map.errorSaveHandler, window.util.saveURL, window.util.saveMetod, window.formData);
+    }
+  };
+
+  var requestRepeated = function () {
+    switch (true) {
+      case (window.xhr.status === window.backend.SUCCESS):
+        break;
+      default:
+        window.util.activMap.removeEventListener('mousedown', requestRepeated);
+        window.util.activMap.removeEventListener('keydown', requestRepeatedEnter);
+        window.backend.loadAndSave(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
+    }
+  };
+
+  var requestRepeatedEnter = function (evt) {
+    if (evt.keyCode === window.util.ENTER_KEYCODE && window.util.activMap) {
+      switch (true) {
+        case (window.xhr.status === window.backend.SUCCESS):
+          break;
+        default:
+          window.util.activMap.removeEventListener('mousedown', requestRepeated);
+          window.util.activMap.removeEventListener('keydown', requestRepeatedEnter);
+          window.backend.loadAndSave(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
+      }
     }
   };
 
@@ -125,9 +171,7 @@
   var openMap = function () {
     document.querySelector('.map').classList.remove('map--faded');
     document.querySelector('.ad-form').classList.remove('ad-form--disabled');
-    delAllAttribute(blockMap);
     delAllAttribute(blockForm);
-    delAttribute('.map__features');
     delAttribute('.ad-form-header');
   };
 
@@ -139,11 +183,33 @@
   window.util.activMap.addEventListener('mousedown', function () {
     if (document.querySelector('.map--faded')) {
       window.backend.loadAndSave(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
+      openMap();
     }
   });
   window.util.activMap.addEventListener('keydown', function (evt) {
     if (evt.keyCode === window.util.ENTER_KEYCODE && document.querySelector('.map--faded')) {
       window.backend.loadAndSave(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
+      openMap();
+    }
+  });
+
+  resetButton.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    resetFiltrs();
+    resetForm();
+    window.pin.showAddress();
+    delPins();
+    resetPage();
+  });
+
+  resetButton.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === window.util.ENTER_KEYCODE) {
+      evt.preventDefault();
+      resetFiltrs();
+      resetForm();
+      window.pin.showAddress();
+      delPins();
+      resetPage();
     }
   });
 
@@ -157,7 +223,10 @@
     successHandler: successHandler,
     errorHandler: errorHandler,
     successSaveHandler: successSaveHandler,
-    errorSaveHandler: errorSaveHandler
+    errorSaveHandler: errorSaveHandler,
+    blockMap: blockMap,
+    delAllAttribute: delAllAttribute,
+    delAttribute: delAttribute
   };
 
 })();

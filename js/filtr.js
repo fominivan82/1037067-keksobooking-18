@@ -3,11 +3,14 @@
 (function () {
   var DEBOUNCE_INTERVAL = 500; // ms
   var HIGH_PRICE = 50000;
+  var FIRST = '1';
+  var SECOND = '2';
+  var THIRD = '3';
+  var ZEROTH = '0';
   var ONE = 1;
   var TWO = 2;
   var THREE = 3;
   var ZERO = 0;
-
   var filterMap = document.querySelector('.map__filters');
   var houseMap = {
     'any': ['palace', 'flat', 'house', 'bungalo'],
@@ -61,20 +64,21 @@
     }
     return offersPrice;
   };
+
   var filterRoom = function (type, array) {
     var offersRoom;
     switch (true) {
-      case (type === ONE):
+      case (type === FIRST):
         offersRoom = array.filter(function (arr) {
           return (arr.offer.rooms === ONE);
         });
         break;
-      case (type === TWO):
+      case (type === SECOND):
         offersRoom = array.filter(function (arr) {
           return (arr.offer.rooms === TWO);
         });
         break;
-      case (type === THREE):
+      case (type === THIRD):
         offersRoom = array.filter(function (arr) {
           return (arr.offer.rooms === THREE);
         });
@@ -89,17 +93,17 @@
   var filterGuests = function (type, array) {
     var offersGuests;
     switch (true) {
-      case (type === ONE):
+      case (type === FIRST):
         offersGuests = array.filter(function (arr) {
           return (arr.offer.guests === ONE);
         });
         break;
-      case (type === TWO):
+      case (type === SECOND):
         offersGuests = array.filter(function (arr) {
           return (arr.offer.guests === TWO);
         });
         break;
-      case (type === ZERO):
+      case (type === ZEROTH):
         offersGuests = array.filter(function (arr) {
           return (arr.offer.guests === ZERO);
         });
@@ -159,5 +163,6 @@
 
   window.filtr = {
     getfilterMap: getfilterMap,
+    filterMap: filterMap
   };
 })();
