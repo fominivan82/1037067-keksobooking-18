@@ -7,8 +7,9 @@
   var priceForm = document.querySelector('#price');
   var timeIn = document.querySelector('#timein');
   var timeOut = document.querySelector('#timeout');
-  var formSubmit = document.querySelector('.ad-form__submit');
+  var roomNumber = document.querySelector('#room_number');
   var guestCapacity = document.querySelector('#capacity');
+  var formSubmit = document.querySelector('.ad-form__submit');
   var MIN_SIMBOLS = 30;
   var MAX_SIMBOLS = 100;
 
@@ -39,8 +40,8 @@
     }
   };
 
-  window.util.insertAttribute('#title', 'required');
-  window.util.insertAttribute('#price', 'required');
+  window.util.insertAttribute('#title', 'required', '');
+  window.util.insertAttribute('#price', 'required', '');
   window.util.insertAttribute('#price', 'max', '1000000');
 
   titleForm.addEventListener('input', function (evt) {
@@ -51,7 +52,7 @@
     if (target.value.length > MAX_SIMBOLS) {
       target.setCustomValidity('Имя должно состоять максимум из 100 символов');
     }
-    if (target.value.length > MIN_SIMBOLS && target.value.length < MAX_SIMBOLS) {
+    if (target.value.length >= MIN_SIMBOLS && target.value.length <= MAX_SIMBOLS) {
       target.setCustomValidity('');
     }
   });
@@ -84,16 +85,28 @@
   };
 
   var validateRoomAndGuests = function (room, guest) {
-    return roomMap[room].includes(guest);
+    return window.form.roomMap[room].includes(guest);
   };
-  formSubmit.addEventListener('click', function () {
-    var targetRooms = document.querySelector('#room_number');
-    var targetCapacity = document.querySelector('#capacity');
-    if (validateRoomAndGuests(targetRooms.value, targetCapacity.value)) {
+
+  var validateAllRoomAndGuests = function () {
+
+    if (validateRoomAndGuests(roomNumber.value, guestCapacity.value)) {
       guestCapacity.setCustomValidity('');
     } else {
       guestCapacity.setCustomValidity('Введите правильное количество гостей');
     }
+  };
+
+  guestCapacity.addEventListener('change', function () {
+    validateAllRoomAndGuests();
+  });
+
+  roomNumber.addEventListener('change', function () {
+    validateAllRoomAndGuests();
+  });
+
+  formSubmit.addEventListener('click', function () {
+    validateAllRoomAndGuests();
   });
 
   window.util.setupForm.addEventListener('submit', function (evt) {

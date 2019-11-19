@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var address = function () {
+  var showAddress = function () {
     var RADIX = 10;
     var getXY = getComputedStyle(window.util.activMap);
     var x = parseInt(getXY.left, RADIX) + window.util.WIDTH_LABEL;
@@ -9,10 +9,12 @@
     var addressWindow = document.querySelector('#address');
 
     if ((window.util.MIN_Y_MAP < y < window.util.MAX_Y_MAP) && (x <= window.util.MAX_X_MAP)) {
-      addressWindow.setAttribute('readonly', 'readonly');
+      addressWindow.setAttribute('readonly', '');
       addressWindow.value = x + ', ' + y;
     }
   };
+
+  showAddress();
 
   window.util.activMap.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -48,11 +50,11 @@
         }
 
         var positionY = y;
-        if (y < window.util.MIN_Y_MAP) {
-          positionY = window.util.MIN_Y_MAP;
+        if (y < window.util.MIN_Y_MAP - window.util.HAIGTH_LABEL) {
+          positionY = window.util.MIN_Y_MAP - window.util.HAIGTH_LABEL;
         }
-        if (y > window.util.MAX_Y_MAP) {
-          positionY = window.util.MAX_Y_MAP;
+        if (y > window.util.MAX_Y_MAP - window.util.HAIGTH_LABEL) {
+          positionY = window.util.MAX_Y_MAP - window.util.HAIGTH_LABEL;
         }
 
         window.util.activMap.style.top = positionY + 'px';
@@ -61,7 +63,7 @@
       };
 
       limitCoords(styleLeft, styleTop);
-      address();
+      showAddress();
     };
 
     var onMouseUp = function (upEvt) {
@@ -76,6 +78,6 @@
   });
 
   window.pin = {
-    address: address
+    showAddress: showAddress
   };
 })();
