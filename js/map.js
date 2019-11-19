@@ -197,6 +197,7 @@
     evt.preventDefault();
     resetFiltrs();
     resetForm();
+    window.main.removeOpenedCard();
     window.pin.showAddress();
     delPins();
     resetPage();
@@ -207,6 +208,7 @@
       evt.preventDefault();
       resetFiltrs();
       resetForm();
+      window.main.removeOpenedCard();
       window.pin.showAddress();
       delPins();
       resetPage();
