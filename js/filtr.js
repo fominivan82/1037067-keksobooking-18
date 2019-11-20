@@ -118,9 +118,7 @@
 
   var getfilterMap = function () {
 
-    var offers = Array.from(window.xhr.response).map(function (array) {
-      return array;
-    });
+    var offers = Array.from(window.xhr.response);
 
     filterMap.addEventListener('change', debounce(function () {
       var targetHouse = document.querySelector('#housing-type');
@@ -128,9 +126,7 @@
       var targetRoom = document.querySelector('#housing-rooms');
       var targetGuests = document.querySelector('#housing-guests');
       var targetFeatures = document.querySelectorAll('.map__checkbox');
-      var offersFeatures = Array.from(targetFeatures).map(function (array) {
-        return array;
-      });
+      var offersFeatures = Array.from(targetFeatures);
 
       var checkFeatures = offersFeatures.filter(function (arr) {
         return arr.checked;

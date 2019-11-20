@@ -11,20 +11,24 @@
 
 
   var changeAvatar = function (file, avatar) {
-    var fileName = file.name.toLowerCase();
+    if (file) {
 
-    var matches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
+      var fileName = file.name.toLowerCase();
 
-    if (matches) {
-      var reader = new FileReader();
-
-      reader.addEventListener('load', function () {
-        avatar.src = reader.result;
+      var matches = FILE_TYPES.some(function (it) {
+        return fileName.endsWith(it);
       });
 
-      reader.readAsDataURL(file);
+      if (matches) {
+        var reader = new FileReader();
+
+        reader.addEventListener('load', function () {
+          avatar.src = reader.result;
+
+        });
+
+        reader.readAsDataURL(file);
+      }
     }
   };
 

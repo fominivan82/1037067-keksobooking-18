@@ -2,6 +2,9 @@
 
 (function () {
 
+  var MIN_SIMBOLS = 30;
+  var MAX_SIMBOLS = 100;
+
   var titleForm = document.querySelector('#title');
   var typeForm = document.querySelector('#type');
   var priceForm = document.querySelector('#price');
@@ -10,8 +13,6 @@
   var roomNumber = document.querySelector('#room_number');
   var guestCapacity = document.querySelector('#capacity');
   var formSubmit = document.querySelector('.ad-form__submit');
-  var MIN_SIMBOLS = 30;
-  var MAX_SIMBOLS = 100;
 
   var validationPriceType = function (target, price) {
     switch (true) {

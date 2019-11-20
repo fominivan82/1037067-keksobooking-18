@@ -22,8 +22,9 @@
 
   var errorHandler = function (errorMessage) {
     document.body.insertAdjacentElement('afterbegin', window.main.renderError(errorMessage));
-    getError(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
     document.addEventListener('keydown', onErrLoadEscClose);
+    getError();
+
   };
 
   var successSaveHandler = function () {
@@ -36,7 +37,7 @@
 
   var errorSaveHandler = function (errorMessage) {
     window.util.adjElement.insertAdjacentElement('afterbegin', window.main.renderError(errorMessage));
-    getError(window.map.successSaveHandler, window.map.errorSaveHandler, window.util.saveURL, window.util.saveMetod, window.formData);
+    getError();
     document.addEventListener('keydown', onErrPopupEscClose);
   };
 
@@ -60,22 +61,30 @@
     });
   };
 
+  var onOpen = function () {
+    document.removeEventListener('mousedown', onOpen);
+    document.removeEventListener('keydown', onErrPopupEscClose);
+    document.removeEventListener('keydown', onErrLoadEscClose);
+
+    var errorClass = document.querySelector('.error');
+    if (errorClass) {
+      errorClass.remove();
+    }
+    openMap();
+  };
+
   var getError = function () {
-    document.body.onmousedown = function () {
-      var errorClass = document.querySelector('.error');
-      if (errorClass) {
-        errorClass.remove();
-      }
-      openMap();
-      window.util.activMap.addEventListener('mousedown', requestRepeated);
-      window.util.activMap.addEventListener('keydown', requestRepeatedEnter);
-    };
+    document.addEventListener('mousedown', onOpen);
+    requestRepeatedAll();
 
     var errButton = document.querySelector('.error__button');
-    errButton.onmousedown = function (evt) {
+    errButton.addEventListener('mousedown', function (evt) {
       evt.stopImmediatePropagation();
       document.querySelector('.error').remove();
-    };
+      document.removeEventListener('mousedown', onOpen);
+      document.removeEventListener('keydown', onErrPopupEscClose);
+      document.removeEventListener('keydown', onErrLoadEscClose);
+    });
   };
 
   var resetForm = function () {
@@ -92,10 +101,14 @@
     insertAllAttribute(blockForm);
     window.util.insertAttribute('.map__features', 'disabled', 'disabled');
     window.util.insertAttribute('.ad-form-header', 'disabled', 'disabled');
+
+    window.util.activMap.addEventListener('mousedown', onActivMap);
+    window.util.activMap.addEventListener('keydown', onActivMapEnter);
   };
 
   var successSave = function () {
     document.body.removeEventListener('click', successSave);
+    document.removeEventListener('keydown', onPopupEscClose);
     document.querySelector('.success').remove();
 
     resetForm();
@@ -105,50 +118,44 @@
   };
 
   var onPopupEscClose = function (evt) {
-    if (evt.keyCode === window.util.ESC_KYECODE) {
+    if (evt.keyCode === window.util.ESC_KEYCODE) {
       document.removeEventListener('keydown', onPopupEscClose);
+      document.body.removeEventListener('click', successSave);
       successSave();
     }
   };
 
   var onErrLoadEscClose = function (evt) {
-    if (evt.keyCode === window.util.ESC_KYECODE) {
-      document.removeEventListener('keydown', onErrLoadEscClose);
-      document.querySelector('.error').remove();
-      openMap();
-      window.util.activMap.addEventListener('mousedown', requestRepeated);
-      window.util.activMap.addEventListener('keydown', requestRepeatedEnter);
+    if (evt.keyCode === window.util.ESC_KEYCODE) {
+      onOpen();
     }
   };
 
   var onErrPopupEscClose = function (evt) {
-    if (evt.keyCode === window.util.ESC_KYECODE) {
+    if (evt.keyCode === window.util.ESC_KEYCODE) {
       document.removeEventListener('keydown', onErrPopupEscClose);
       document.querySelector('.error').remove();
     }
   };
 
   var requestRepeated = function () {
-    switch (true) {
-      case (window.xhr.status === window.backend.SUCCESS):
-        break;
-      default:
-        window.util.activMap.removeEventListener('mousedown', requestRepeated);
-        window.util.activMap.removeEventListener('keydown', requestRepeatedEnter);
-        window.backend.loadAndSave(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
-    }
+    window.util.activMap.removeEventListener('mousedown', requestRepeated);
+    window.util.activMap.removeEventListener('keydown', requestRepeatedEnter);
+    window.backend.loadAndSave(window.map.successHandler, errorHandler, window.util.loadURL, window.util.loadMetod);
   };
 
   var requestRepeatedEnter = function (evt) {
     if (evt.keyCode === window.util.ENTER_KEYCODE && window.util.activMap) {
-      switch (true) {
-        case (window.xhr.status === window.backend.SUCCESS):
-          break;
-        default:
-          window.util.activMap.removeEventListener('mousedown', requestRepeated);
-          window.util.activMap.removeEventListener('keydown', requestRepeatedEnter);
-          window.backend.loadAndSave(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
-      }
+      window.util.activMap.removeEventListener('mousedown', requestRepeated);
+      window.util.activMap.removeEventListener('keydown', requestRepeatedEnter);
+      window.backend.loadAndSave(window.map.successHandler, errorHandler, window.util.loadURL, window.util.loadMetod);
+    }
+  };
+
+  var requestRepeatedAll = function () {
+    if (!(window.xhr.status === window.backend.SUCCESS)) {
+      window.util.activMap.addEventListener('mousedown', requestRepeated);
+      window.util.activMap.addEventListener('keydown', requestRepeatedEnter);
     }
   };
 
@@ -180,18 +187,26 @@
   window.util.insertAttribute('.map__features', 'disabled', 'disabled');
   window.util.insertAttribute('.ad-form-header', 'disabled', 'disabled');
 
-  window.util.activMap.addEventListener('mousedown', function () {
+  var onActivMap = function () {
     if (document.querySelector('.map--faded')) {
-      window.backend.loadAndSave(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
+      window.util.activMap.removeEventListener('mousedown', onActivMap);
+      window.util.activMap.removeEventListener('keydown', onActivMapEnter);
+      window.backend.loadAndSave(window.map.successHandler, errorHandler, window.util.loadURL, window.util.loadMetod);
       openMap();
     }
-  });
-  window.util.activMap.addEventListener('keydown', function (evt) {
+  };
+
+  var onActivMapEnter = function (evt) {
     if (evt.keyCode === window.util.ENTER_KEYCODE && document.querySelector('.map--faded')) {
-      window.backend.loadAndSave(window.map.successHandler, window.map.errorHandler, window.util.loadURL, window.util.loadMetod);
+      window.util.activMap.removeEventListener('mousedown', onActivMap);
+      window.util.activMap.removeEventListener('keydown', onActivMapEnter);
+      window.backend.loadAndSave(window.map.successHandler, errorHandler, window.util.loadURL, window.util.loadMetod);
       openMap();
     }
-  });
+  };
+
+  window.util.activMap.addEventListener('mousedown', onActivMap);
+  window.util.activMap.addEventListener('keydown', onActivMapEnter);
 
   resetButton.addEventListener('click', function (evt) {
     evt.preventDefault();
@@ -203,18 +218,6 @@
     resetPage();
   });
 
-  resetButton.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === window.util.ENTER_KEYCODE) {
-      evt.preventDefault();
-      resetFiltrs();
-      resetForm();
-      window.main.removeOpenedCard();
-      window.pin.showAddress();
-      delPins();
-      resetPage();
-    }
-  });
-
   var mapPins = document.querySelector('.map__pins');
   var mapCardElement = '<div class="map__cards"></div>';
   mapPins.insertAdjacentHTML('afterend', mapCardElement);
@@ -223,7 +226,6 @@
     addFragment: addFragment,
     delPins: delPins,
     successHandler: successHandler,
-    errorHandler: errorHandler,
     successSaveHandler: successSaveHandler,
     errorSaveHandler: errorSaveHandler,
     blockMap: blockMap,

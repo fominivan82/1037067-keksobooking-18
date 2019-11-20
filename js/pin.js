@@ -5,7 +5,7 @@
     var RADIX = 10;
     var getXY = getComputedStyle(window.util.activMap);
     var x = parseInt(getXY.left, RADIX) + window.util.WIDTH_LABEL;
-    var y = parseInt(getXY.top, RADIX) + window.util.HAIGTH_LABEL;
+    var y = parseInt(getXY.top, RADIX) + window.util.HAIGHT_LABEL;
     var addressWindow = document.querySelector('#address');
 
     if ((window.util.MIN_Y_MAP < y < window.util.MAX_Y_MAP) && (x <= window.util.MAX_X_MAP)) {
@@ -50,11 +50,11 @@
         }
 
         var positionY = y;
-        if (y < window.util.MIN_Y_MAP - window.util.HAIGTH_LABEL) {
-          positionY = window.util.MIN_Y_MAP - window.util.HAIGTH_LABEL;
+        if (y < window.util.MIN_Y_MAP - window.util.HAIGHT_LABEL) {
+          positionY = window.util.MIN_Y_MAP - window.util.HAIGHT_LABEL;
         }
-        if (y > window.util.MAX_Y_MAP - window.util.HAIGTH_LABEL) {
-          positionY = window.util.MAX_Y_MAP - window.util.HAIGTH_LABEL;
+        if (y > window.util.MAX_Y_MAP - window.util.HAIGHT_LABEL) {
+          positionY = window.util.MAX_Y_MAP - window.util.HAIGHT_LABEL;
         }
 
         window.util.activMap.style.top = positionY + 'px';

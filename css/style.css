@@ -806,16 +806,6 @@
   }
 
   .ad-form__photo {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-
-    align-items: center;
-    margin-right: 10px;
-    padding: 0 15px;
-
     margin-right: 10px;
     margin-bottom: 10px;
 
